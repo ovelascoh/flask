@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flask
+  template:
+    metadata:
+      name: flask
+      labels:
+        app: flask
+    spec:
+      containers:
+      - image: ovelascoh/flask:v1
+        env:
+        - name: REDIS_URL
+          value: "redis://redis:6379"
+        - name: APP_SECRET_KEY
+          value: "$om3_$3cr3t"
+        name: flask
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask
+spec:
+  type: LoadBalancer
+  selector:
+    app: flask
+  ports:
+  - port: 80
+    targetPort: 5000
